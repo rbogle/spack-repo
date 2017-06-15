@@ -9,9 +9,9 @@ In order to add an addtional repository to spack and use these packages do the f
 	
     The contents of this file should look like:
     ```
-    	repos:
-    	- /path/to/local-repo
-        - $spack/var/spack/repos/builtin
+    repos:
+      - /path/to/local-repo
+      - $spack/var/spack/repos/builtin
     ```
     
     The order of repos establishes precedence and ordering allowing you to overrride the builtin packages with customizations
