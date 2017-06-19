@@ -49,11 +49,9 @@ class CdHit(MakefilePackage):
     version('4.6.7-2017-0501', '27acef3e8db791c510dd69100ee48705')
 
     parallel = False
-    
+
     def edit(self, spec, prefix):
-        # FIXME: Edit the Makefile if necessary
-        # FIXME: If not needed delete this function
-	mkdirp(prefix.bin)
+        mkdirp(prefix.bin)
         filter_file(r'PREFIX \?= /usr/local/bin',
                     'PREFIX={0}'.format(self.prefix.bin),
                     'makefile')

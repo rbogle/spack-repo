@@ -40,23 +40,37 @@
 from spack import *
 
 
-class PyLsBsr(PythonPackage):
-    """LS=BSR python package """
+class LsBsr(Package):
+    """LS-BSR python package """
+    # We tried to build this as a PythonPackage but the
+    # structure of the repo wouldn't behave well between
+    # setup.py, pythonpath, and spack. So we do a generic install.
 
     homepage = "https://github.com/jasonsahl/LS-BSR"
     url      = "https://github.com/jasonsahl/LS-BSR.git"
 
     version('current', git=url)
 
-    depends_on('py-biopython')
+    depends_on('py-biopython', type='run')
     depends_on('vsearch', type='run')
     depends_on('cd-hit', type='run')
     depends_on('blast-plus', type='run')
     depends_on('blat', type='run')
     depends_on('prodigal', type='run')
 
-    @run_before('install')
-    def edit(self):
-        orig = "long_description=long_description"
-        mod = orig+",\n      scripts=[\'ls_bsr.py\']"
-        filter_file(orig,mod,'setup.py')
+#    @run_before('install')
+#    def edit(self):
+#        orig = "long_description=long_description"
+#        mod = orig+",\n      scripts=[\'ls_bsr.py\',\'igs_logging.py\']"
+#        filter_file(orig,mod,'setup.py')
+
+    def install(self,spec,prefix):
+        chmod = which('chmod')
+        pkg_path=join_path(prefix.bin, 'ls_bsr')
+        mkdirp(prefix.bin)
+        mkdirp(pkg_path)
+        chmod('a+x', 'ls_bsr.py')
+        install('ls_bsr.py', prefix.bin)
+        install('igs_logging.py', prefix.bin)
+        install('ls_bsr/util.py', pkg_path)
+        install('ls_bsr/__init__.py', pkg_path)

@@ -43,7 +43,6 @@ from spack import *
 class Vsearch(AutotoolsPackage):
     """Vsearch Geneteics package"""
 
-    # FIXME: Add a proper url for your package's homepage here.
     homepage = "https://github.com/torognes/vsearch"
     url      = "https://github.com/torognes/vsearch/archive/v2.4.3.tar.gz"
 
