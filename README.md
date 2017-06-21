@@ -1,5 +1,5 @@
 This project is a spack repository of packages developed or customized for 
-USGS Astrogeology Science Center. 
+USGS HPC applicatons. 
 
 In order to add an addtional repository to spack and use these packages do the following:
 
