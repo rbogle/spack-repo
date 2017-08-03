@@ -27,53 +27,32 @@
 # next to all the things you'll want to change. Once you've handled
 # them, you can save this file and test your package like this:
 #
-#     spack install kakadu
+#     spack install r-prospectr
 #
 # You can edit this file again by typing:
 #
-#     spack edit kakadu
+#     spack edit r-prospectr
 #
 # See the Spack documentation for more information on packaging.
 # If you submit this package back to Spack as a pull request,
 # please first remove this boilerplate and all FIXME comments.
 #
 from spack import *
-import platform
-from shutil import copyfile,copytree
 
-class Kakadu(MakefilePackage):
-    """Builds the commercial licensed product Kakadu a jpeg2000 implementation"""
 
-    # TODO: You will need to modify the url and version hash below to fit your enviro.
-    homepage = "http://www.kakadusoftware.com"
-    url      = "http://gold.wr.usgs.gov/postinstall/pkgs/common/kakadu-7.9.1.zip"
+class RProspectr(RPackage):
+    """FIXME: Put a proper description of your package here."""
 
-    version('7.9.1', 'dfe33cb66309039f7b3c4d861d50dfde')
+    homepage = "https://cran.r-project.org/web/packages/prospectr/index.html"
+    url      = "https://cran.r-project.org/src/contrib/prospectr_0.1.3.tar.gz"
 
-    depends_on('jdk', type='build')
-   
-    @property
-    def build_directory(self):
-	return join_path(self.stage.source_path,"make")
-    
-    build_targets = ['all']
-    parallel = False
+    version('0.1.3', 'f4bed91a86fb050e603b403e34f69cc4')
+    version('0.1.1', '20866211d5e7816e5d374d71c94c469a')
+    version('0.1',   '1c7bfe4fd2963ed227fba17664e7cd5b')
 
-    # We make a proper Makefile in ./make based on the platform
-    # We are ignoring 32bit and PPC for now. 
-    def edit(self, spec, prefix):
-	makefile_out = join_path(self.build_directory, 'Makefile')
-	system = platform.system()
-        makefile_in = join_path(self.build_directory, 'Makefile-Linux-x86-64-gcc')
-	self.build_dest = 'Linux-x86-64-gcc'
-	if system == "Darwin" :
-	  makefile_in = join_path(self.build_directory, "Makefile-MAC-x86-all-gcc")
-	  self.build_dest = "Mac-x86-64-gcc"	
-	# copy the platform specific file to generic
-        copyfile(makefile_in, makefile_out)
+    depends_on('r-iterators')
+    depends_on('r-foreach')
+    depends_on('r-rcpp')
+    depends_on('r-rcpparmadillo')
+ 
 
-    def install(self, spec, prefix):
-	copytree(join_path('./bin',self.build_dest),prefix.bin)
-	copytree(join_path('./lib',self.build_dest),prefix.lib)
-	copytree('./apps', join_path(prefix,'apps'))
-	copytree('./coresys', join_path(prefix,'coresys'))

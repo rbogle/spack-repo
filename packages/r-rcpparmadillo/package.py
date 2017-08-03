@@ -27,53 +27,27 @@
 # next to all the things you'll want to change. Once you've handled
 # them, you can save this file and test your package like this:
 #
-#     spack install kakadu
+#     spack install r-rcpparmadillo
 #
 # You can edit this file again by typing:
 #
-#     spack edit kakadu
+#     spack edit r-rcpparmadillo
 #
 # See the Spack documentation for more information on packaging.
 # If you submit this package back to Spack as a pull request,
 # please first remove this boilerplate and all FIXME comments.
 #
 from spack import *
-import platform
-from shutil import copyfile,copytree
 
-class Kakadu(MakefilePackage):
-    """Builds the commercial licensed product Kakadu a jpeg2000 implementation"""
 
-    # TODO: You will need to modify the url and version hash below to fit your enviro.
-    homepage = "http://www.kakadusoftware.com"
-    url      = "http://gold.wr.usgs.gov/postinstall/pkgs/common/kakadu-7.9.1.zip"
+class RRcpparmadillo(RPackage):
 
-    version('7.9.1', 'dfe33cb66309039f7b3c4d861d50dfde')
+    homepage = "http://www.example.com"
+    url      = "https://cran.r-project.org/src/contrib/RcppArmadillo_0.7.900.2.0.tar.gz"
 
-    depends_on('jdk', type='build')
-   
-    @property
-    def build_directory(self):
-	return join_path(self.stage.source_path,"make")
-    
-    build_targets = ['all']
-    parallel = False
+    version('0.7.900.2.0', '051a09a778ee76c5ac11d802d9eea2fd')
+    version('0.7.800.2.0', 'dedf17cfe534019f52def3a1a259d62f')
+    version('0.7.700.0.0', '2a91c39a8cc0c4bae306c474a87c5b63')
 
-    # We make a proper Makefile in ./make based on the platform
-    # We are ignoring 32bit and PPC for now. 
-    def edit(self, spec, prefix):
-	makefile_out = join_path(self.build_directory, 'Makefile')
-	system = platform.system()
-        makefile_in = join_path(self.build_directory, 'Makefile-Linux-x86-64-gcc')
-	self.build_dest = 'Linux-x86-64-gcc'
-	if system == "Darwin" :
-	  makefile_in = join_path(self.build_directory, "Makefile-MAC-x86-all-gcc")
-	  self.build_dest = "Mac-x86-64-gcc"	
-	# copy the platform specific file to generic
-        copyfile(makefile_in, makefile_out)
+    depends_on('r-rcpp')
 
-    def install(self, spec, prefix):
-	copytree(join_path('./bin',self.build_dest),prefix.bin)
-	copytree(join_path('./lib',self.build_dest),prefix.lib)
-	copytree('./apps', join_path(prefix,'apps'))
-	copytree('./coresys', join_path(prefix,'coresys'))

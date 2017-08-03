@@ -27,53 +27,32 @@
 # next to all the things you'll want to change. Once you've handled
 # them, you can save this file and test your package like this:
 #
-#     spack install kakadu
+#     spack install r-rgdal
 #
 # You can edit this file again by typing:
 #
-#     spack edit kakadu
+#     spack edit r-rgdal
 #
 # See the Spack documentation for more information on packaging.
 # If you submit this package back to Spack as a pull request,
 # please first remove this boilerplate and all FIXME comments.
 #
 from spack import *
-import platform
-from shutil import copyfile,copytree
 
-class Kakadu(MakefilePackage):
-    """Builds the commercial licensed product Kakadu a jpeg2000 implementation"""
 
-    # TODO: You will need to modify the url and version hash below to fit your enviro.
-    homepage = "http://www.kakadusoftware.com"
-    url      = "http://gold.wr.usgs.gov/postinstall/pkgs/common/kakadu-7.9.1.zip"
+class RRgdal(RPackage):
 
-    version('7.9.1', 'dfe33cb66309039f7b3c4d861d50dfde')
+    '''
+Provides bindings to Frank Warmerdam's Geospatial Data Abstraction Library (GDAL) (>= 1.6.3) and access to projection/transformation operations from the PROJ.4 library. The GDAL and PROJ.4 libraries are external to the package, and, when installing the package from source, must be correctly installed first. Both GDAL raster and OGR vector map data can be imported into R, and GDAL raster data and OGR vector data exported. Use is made of classes defined in the sp package. Windows and Mac Intel OS X binaries (including GDAL, PROJ.4 and Expat) are provided on CRAN.
+    '''
+    homepage = "https://cran.r-project.org/web/packages/rgdal/index.html"
+    url      = "https://cran.r-project.org/src/contrib/rgdal_1.2-8.tar.gz"
 
-    depends_on('jdk', type='build')
-   
-    @property
-    def build_directory(self):
-	return join_path(self.stage.source_path,"make")
-    
-    build_targets = ['all']
-    parallel = False
+    version('1.2-8', '8ec90a040cd3774bdbc031cb0fca267b')
+    version('1.2-7', 'd9c64bd1b5b31e3b4d199fe6aeaacdde')
+    version('1.2-6', '7d4d83cb7df11ad0d9efdcc61526b767')
 
-    # We make a proper Makefile in ./make based on the platform
-    # We are ignoring 32bit and PPC for now. 
-    def edit(self, spec, prefix):
-	makefile_out = join_path(self.build_directory, 'Makefile')
-	system = platform.system()
-        makefile_in = join_path(self.build_directory, 'Makefile-Linux-x86-64-gcc')
-	self.build_dest = 'Linux-x86-64-gcc'
-	if system == "Darwin" :
-	  makefile_in = join_path(self.build_directory, "Makefile-MAC-x86-all-gcc")
-	  self.build_dest = "Mac-x86-64-gcc"	
-	# copy the platform specific file to generic
-        copyfile(makefile_in, makefile_out)
+    depends_on('r-sp')
+    depends_on('gdal', type=('build'))
+    depends_on('proj', type=('build'))
 
-    def install(self, spec, prefix):
-	copytree(join_path('./bin',self.build_dest),prefix.bin)
-	copytree(join_path('./lib',self.build_dest),prefix.lib)
-	copytree('./apps', join_path(prefix,'apps'))
-	copytree('./coresys', join_path(prefix,'coresys'))
